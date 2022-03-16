@@ -97,7 +97,8 @@ func isFunction(deployment *appsv1.Deployment) bool {
 
 func deleteFunction(functionNamespace string, clientset *kubernetes.Clientset, request types.DeleteFunctionRequest, w http.ResponseWriter) error {
 	foregroundPolicy := metav1.DeletePropagationForeground
-	opts := &metav1.DeleteOptions{PropagationPolicy: &foregroundPolicy}
+	gracePeriodSeconds := int64(0)
+	opts := &metav1.DeleteOptions{PropagationPolicy: &foregroundPolicy, GracePeriodSeconds: &gracePeriodSeconds}
 
 	if deployErr := clientset.AppsV1().Deployments(functionNamespace).
 		Delete(context.TODO(), request.FunctionName, *opts); deployErr != nil {
